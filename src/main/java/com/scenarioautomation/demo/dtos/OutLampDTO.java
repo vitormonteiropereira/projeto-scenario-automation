@@ -2,5 +2,6 @@ package com.scenarioautomation.demo.dtos;
 
 public record OutLampDTO(
         Integer id,
-        String name
+        String name,
+        Integer roomId
 ) {}

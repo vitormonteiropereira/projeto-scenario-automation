@@ -52,6 +52,11 @@ public class LampController {
     }
 
     private OutLampDTO toOutDTO(Lamp lamp) {
-        return new OutLampDTO(lamp.getId(), lamp.getName());
+        return new OutLampDTO(
+                lamp.getId(),
+                lamp.getName(),
+                lamp.getRoom() != null ? lamp.getRoom().getId() : null
+        );
     }
+
 }

@@ -62,8 +62,16 @@ public class RoomController {
                 room.getId(),
                 room.getName(),
                 room.getLamps().stream()
-                        .map(l -> new OutLampDTO(l.getId(), l.getName()))
+                        .map(l -> new OutLampDTO(
+                                l.getId(),
+                                l.getName(),
+                                l.getRoom() != null ? l.getRoom().getId() : null
+                        ))
                         .toList()
         );
     }
+
+
+
+
 }
