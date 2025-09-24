@@ -1,4 +1,4 @@
-package com.scenarioautomation.demo.auth;
+package com.scenarioautomation.demo.security;
 
 import org.springframework.stereotype.Service;
 
