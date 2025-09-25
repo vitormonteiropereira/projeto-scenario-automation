@@ -23,14 +23,8 @@ public class LampController {
 
     @PostMapping
     public ResponseEntity<OutLampDTO> insertLamp (@Valid @RequestBody InLampDTO inLampDTO){
-        var saved = service.insertLamp(inLampDTO.name(), inLampDTO.roomId());
+        var saved = service.insertLamp( inLampDTO.roomId());
         return ResponseEntity.status(HttpStatus.CREATED).body(toOutDTO(saved));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<OutLampDTO> updateLamp (@PathVariable("id") int id, @RequestBody @Valid InLampDTO inLampDTO ){
-        var updated = service.updateLamp(id, inLampDTO.name());
-        return ResponseEntity.status(HttpStatus.OK).body(toOutDTO(updated));
     }
 
     @DeleteMapping("/{id}")
@@ -45,16 +39,10 @@ public class LampController {
         return ResponseEntity.status(HttpStatus.OK).body(lamps);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OutLampDTO> getLampById(@PathVariable("id") int id) {
-        Lamp lamp = service.getLampById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(toOutDTO(lamp));
-    }
 
     private OutLampDTO toOutDTO(Lamp lamp) {
         return new OutLampDTO(
                 lamp.getId(),
-                lamp.getName(),
                 lamp.getRoom() != null ? lamp.getRoom().getId() : null
         );
     }

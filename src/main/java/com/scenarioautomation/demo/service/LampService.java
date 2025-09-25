@@ -24,21 +24,16 @@ public class LampService {
     }
 
     @Transactional
-    public Lamp insertLamp(String name, Integer roomId) {
+    public Lamp insertLamp(Integer roomId) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(RoomNotFoundException::new);
 
-        Lamp lamp = new Lamp(name);
+        Lamp lamp = new Lamp();
         lamp.setRoom(room);
         return lampRepository.save(lamp);
     }
 
-    @Transactional
-    public Lamp updateLamp(int id, String name) {
-        Lamp current = lampRepository.findById(id).orElseThrow(LampNotFoundException::new);
-        current.setName(name);
-        return lampRepository.save(current);
-    }
+
 
     @Transactional
     public void deleteLamp(int id) {
@@ -51,8 +46,5 @@ public class LampService {
         return lampRepository.findAll(Sort.by("id"));
     }
 
-    @Transactional
-    public Lamp getLampById(int id) {
-        return lampRepository.findById(id).orElseThrow(LampNotFoundException::new);
-    }
+
 }

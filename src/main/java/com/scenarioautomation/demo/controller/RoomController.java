@@ -26,9 +26,7 @@ public class RoomController {
     @PostMapping
     public ResponseEntity<OutRoomDTO> insertRoom(@Valid @RequestBody InRoomDTO inRoomDTO) {
         Room room = new Room(inRoomDTO.name());
-        if (inRoomDTO.lamps() != null) {
-            inRoomDTO.lamps().forEach(ldto -> room.addLamp(new Lamp(ldto.name())));
-        }
+
         Room saved = service.insertRoom(room);
         return ResponseEntity.status(HttpStatus.CREATED).body(toOutDTO(saved));
     }
@@ -51,11 +49,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(rooms);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OutRoomDTO> getRoomById(@PathVariable("id") int id) {
-        Room room = service.getRoomById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(toOutDTO(room));
-    }
+
 
     private OutRoomDTO toOutDTO(Room room) {
         return new OutRoomDTO(
@@ -64,7 +58,6 @@ public class RoomController {
                 room.getLamps().stream()
                         .map(l -> new OutLampDTO(
                                 l.getId(),
-                                l.getName(),
                                 l.getRoom() != null ? l.getRoom().getId() : null
                         ))
                         .toList()

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Rooms & Lamps (Simples)</title>
+</head>
+<body>
+<h1>Rooms & Lamps</h1>
+
+<!-- Criar Room -->
+<h3>Criar Room</h3>
+<input type="text" id="roomName" placeholder="nome do room">
+<button onclick="addRoom()">Adicionar</button>
+
+<!-- Editar Room -->
+<h3>Editar Room</h3>
+<input type="number" id="editId" placeholder="id">
+<input type="text" id="editName" placeholder="novo nome">
+<button onclick="editRoom()">Salvar</button>
+
+<!-- Deletar Room -->
+<h3>Deletar Room</h3>
+<input type="number" id="deleteId" placeholder="id">
+<button onclick="deleteRoom()">Deletar</button>
+
+<!-- Lista de Rooms -->
+<h2>Lista de Rooms</h2>
+<div id="rooms"></div>
+
+<script>
+    const apiBase = ''; // mesma origem (http://localhost:8080)
+
+    function loadRooms() {
+        fetch(apiBase + '/rooms')
+            .then(r => r.json())
+            .then(data => {
+                const div = document.getElementById('rooms');
+                div.innerHTML = '';
+                data.forEach(room => {
+                    const box = document.createElement('div');
+                    box.style.border = '1px solid black';
+                    box.style.margin = '5px';
+                    box.style.padding = '5px';
+
+                    // título com ID e nome
+                    box.innerHTML = `
+            <p><b>ID:</b> ${room.id} | <b>Nome:</b> ${room.name}</p>
+          `;
+
+                    // lista de lamps
+                    if (room.lamps && room.lamps.length > 0) {
+                        room.lamps.forEach(l => {
+                            const lampLine = document.createElement('p');
+                            lampLine.innerHTML = `Lamp <b>#${l.id}</b>
+                <button onclick="deleteLamp(${l.id})">Deletar Lamp</button>`;
+                            box.appendChild(lampLine);
+                        });
+                    } else {
+                        const empty = document.createElement('p');
+                        empty.innerHTML = `<i>nenhuma lamp</i>`;
+                        box.appendChild(empty);
+                    }
+
+                    // botão add lamp
+                    const addBtn = document.createElement('button');
+                    addBtn.textContent = '+ Add Lamp';
+                    addBtn.onclick = () => addLamp(room.id);
+                    box.appendChild(addBtn);
+
+                    // espaço imagem
+                    const imgSlot = document.createElement('div');
+                    imgSlot.style.border = '1px dashed black';
+                    imgSlot.style.marginTop = '5px';
+                    imgSlot.style.padding = '10px';
+                    imgSlot.textContent = 'espaço para a imagem';
+                    box.appendChild(imgSlot);
+
+                    div.appendChild(box);
+                });
+            });
+    }
+
+    function addRoom() {
+        const name = document.getElementById('roomName').value;
+        fetch(apiBase + '/rooms', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        }).then(() => loadRooms());
+    }
+
+    function editRoom() {
+        const id = document.getElementById('editId').value;
+        const name = document.getElementById('editName').value;
+        fetch(apiBase + '/rooms/' + id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        }).then(() => loadRooms());
+    }
+
+    function deleteRoom() {
+        const id = document.getElementById('deleteId').value;
+        fetch(apiBase + '/rooms/' + id, { method: 'DELETE' })
+            .then(() => loadRooms());
+    }
+
+    function addLamp(roomId) {
+        fetch(apiBase + '/lamps', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ roomId })
+        }).then(() => loadRooms());
+    }
+
+    function deleteLamp(lampId) {
+        fetch(apiBase + '/lamps/' + lampId, { method: 'DELETE' })
+            .then(() => loadRooms());
+    }
+
+    // carregar lista ao abrir
+    loadRooms();
+</script>
+</body>
+</html>
